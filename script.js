@@ -28,44 +28,77 @@ const questions = [
 ];
 
 const state = { playerType: null, playerName: "", currentIndex: 0, score: 0 };
+let typingSkip = false;
 
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-document.getElementById("btn-start").addEventListener("click", () => showScreen("screen-select"));
-
-document.querySelectorAll(".char-option").forEach(btn => {
-  btn.addEventListener("click", () => {
-    state.playerType = btn.dataset.type;
-    showScreen("screen-name");
+// ---- 타이핑 연출 ----
+function typeText(el, text, speed = 25) {
+  return new Promise(resolve => {
+    el.textContent = "";
+    el.classList.add("typing");
+    typingSkip = false;
+    let i = 0;
+    function step() {
+      if (typingSkip) {
+        el.textContent = text;
+        el.classList.remove("typing");
+        resolve();
+        return;
+      }
+      el.textContent += text[i];
+      i++;
+      if (i < text.length) setTimeout(step, speed);
+      else { el.classList.remove("typing"); resolve(); }
+    }
+    step();
   });
-});
+}
 
+document.querySelector(".dialogue-area").addEventListener("click", () => { typingSkip = true; });
+
+function triggerEnter(el) {
+  el.classList.remove("enter");
+  void el.offsetWidth; // 애니메이션 재시작용 강제 리플로우
+  el.classList.add("enter");
+}
+
+// ---- 인트로/선택/이름 ----
+document.getElementById("btn-start").addEventListener("click", () => showScreen("screen-select"));
+document.querySelectorAll(".char-option").forEach(btn => {
+  btn.addEventListener("click", () => { state.playerType = btn.dataset.type; showScreen("screen-name"); });
+});
 document.getElementById("btn-confirm-name").addEventListener("click", () => {
   state.playerName = document.getElementById("input-name").value.trim() || "플레이어";
   startQuiz();
 });
 
+// ---- 퀴즈 ----
 function startQuiz() {
   state.currentIndex = 0;
   state.score = 0;
   showScreen("screen-quiz");
+  triggerEnter(document.getElementById("player-sprite"));
   renderQuestion();
 }
 
-function renderQuestion() {
+async function renderQuestion() {
   const q = questions[state.currentIndex];
   document.getElementById("quiz-progress").textContent = `${state.currentIndex + 1} / ${questions.length}`;
-  document.getElementById("player-sprite").textContent = `[${state.playerName} 뒷모습]`; // 추후 <img>로 교체
-  document.getElementById("npc-sprite").textContent = `[${q.npc}]`; // 추후 <img>로 교체
-  document.getElementById("situation-text").textContent = q.situation;
-  document.getElementById("question-text").textContent = q.question;
+  document.getElementById("player-sprite").textContent = `[${state.playerName} 뒷모습]`;
+  document.getElementById("npc-sprite").textContent = `[${q.npc}]`;
+  triggerEnter(document.getElementById("npc-sprite"));
 
   const choicesEl = document.getElementById("choices");
   choicesEl.innerHTML = "";
+  choicesEl.classList.add("fade-hidden");
   document.getElementById("feedback").classList.add("hidden");
+
+  await typeText(document.getElementById("situation-text"), q.situation);
+  await typeText(document.getElementById("question-text"), q.question);
 
   q.choices.forEach((choice, idx) => {
     const btn = document.createElement("button");
@@ -73,9 +106,10 @@ function renderQuestion() {
     btn.addEventListener("click", () => selectAnswer(idx));
     choicesEl.appendChild(btn);
   });
+  choicesEl.classList.remove("fade-hidden");
 }
 
-function selectAnswer(idx) {
+async function selectAnswer(idx) {
   const q = questions[state.currentIndex];
   if (idx === q.answer) state.score++;
 
@@ -85,8 +119,13 @@ function selectAnswer(idx) {
     else if (i === idx) b.classList.add("wrong");
   });
 
-  document.getElementById("feedback-text").textContent = q.explanation;
-  document.getElementById("feedback").classList.remove("hidden");
+  const feedbackEl = document.getElementById("feedback");
+  const nextBtn = document.getElementById("btn-next");
+  feedbackEl.classList.remove("hidden");
+  nextBtn.classList.add("hidden");
+
+  await typeText(document.getElementById("feedback-text"), q.explanation);
+  nextBtn.classList.remove("hidden");
 }
 
 document.getElementById("btn-next").addEventListener("click", () => {
@@ -95,6 +134,7 @@ document.getElementById("btn-next").addEventListener("click", () => {
   else showEnding();
 });
 
+// ---- 엔딩 ----
 function getEnding(score) {
   if (score === 10) return { title: "완벽", desc: "청렴한 공직 생활의 모범입니다." };
   if (score >= 7) return { title: "무난한 생활", desc: "대체로 원칙을 잘 지키고 있습니다." };
