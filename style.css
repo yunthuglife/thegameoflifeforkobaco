@@ -63,3 +63,23 @@ input[type="text"] {
   #app { margin: 24px auto; min-height: auto; height: 800px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
   .screen { min-height: auto; height: 100%; }
 }
+
+/* 타이핑 커서 깜빡임 */
+.situation.typing::after,
+.question.typing::after,
+#feedback-text.typing::after {
+  content: "▌";
+  margin-left: 2px;
+  animation: blink 0.8s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* 선택지 페이드인 */
+.choices { transition: opacity 0.25s ease; }
+.choices.fade-hidden { opacity: 0; pointer-events: none; }
+
+/* 캐릭터 등장 애니메이션 */
+.player-sprite.enter { animation: slideInLeft 0.4s ease; }
+.npc-sprite.enter { animation: slideInRight 0.4s ease; }
+@keyframes slideInLeft { from { transform: translateX(-40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes slideInRight { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
