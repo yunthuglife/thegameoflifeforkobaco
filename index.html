@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>공직자 윤리 퀴즈</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <section id="screen-intro" class="screen active">
+    <h1>공직자 윤리 퀴즈</h1>
+    <p class="notice">
+      이 게임은 청탁금지법·이해충돌방지법 등 공직자 윤리 관련 법령의 이해를 돕기 위한
+      교육용 콘텐츠이며, 공식 법률 해석이나 자문을 대체하지 않습니다.
+    </p>
+    <button id="btn-start">시작하기</button>
+  </section>
+
+  <section id="screen-select" class="screen">
+    <h2>캐릭터를 선택하세요</h2>
+    <div class="character-grid">
+      <button class="char-option" data-type="young-male">청년 남성</button>
+      <button class="char-option" data-type="middle-male">중년 남성</button>
+      <button class="char-option" data-type="young-female">청년 여성</button>
+      <button class="char-option" data-type="middle-female">중년 여성</button>
+    </div>
+  </section>
+
+  <section id="screen-name" class="screen">
+    <h2>이름을 입력하세요</h2>
+    <input type="text" id="input-name" maxlength="8" placeholder="예: 김민준">
+    <button id="btn-confirm-name">확인</button>
+  </section>
+
+  <section id="screen-quiz" class="screen">
+    <div class="battle-area">
+      <div id="player-sprite" class="sprite player-sprite">[플레이어 뒷모습]</div>
+      <div id="npc-sprite" class="sprite npc-sprite">[NPC]</div>
+      <div class="progress" id="quiz-progress">1 / 10</div>
+    </div>
+    <div class="dialogue-area">
+      <p id="situation-text" class="situation"></p>
+      <p id="question-text" class="question"></p>
+      <div id="choices" class="choices"></div>
+      <div id="feedback" class="feedback hidden">
+        <p id="feedback-text"></p>
+        <button id="btn-next">다음</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-ending" class="screen">
+    <h2 id="ending-title"></h2>
+    <p id="ending-desc"></p>
+    <p id="ending-score"></p>
+    <button id="btn-restart">다시 하기</button>
+  </section>
+
+</div>
+<script src="script.js" defer></script>
+</body>
+</html>

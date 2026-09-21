@@ -1,0 +1,65 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Malgun Gothic", sans-serif;
+  background: #222;
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.screen { display: none; flex-direction: column; padding: 24px; min-height: 100vh; }
+.screen.active { display: flex; }
+
+#screen-intro, #screen-select, #screen-name {
+  justify-content: center; align-items: center; text-align: center; gap: 16px;
+}
+.notice { font-size: 0.85rem; color: #666; line-height: 1.5; }
+
+.character-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+
+button {
+  padding: 12px 20px; border: none; border-radius: 8px;
+  background: #3b5bdb; color: #fff; font-size: 1rem; cursor: pointer;
+}
+button:hover { background: #2f4ac2; }
+
+input[type="text"] {
+  padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; width: 80%;
+}
+
+#screen-quiz { padding: 0; }
+
+.battle-area {
+  position: relative; height: 55vh;
+  background: linear-gradient(to bottom, #a8d8ff 60%, #7fc97f 60%);
+}
+.sprite { position: absolute; padding: 8px 12px; background: rgba(255,255,255,0.8); border-radius: 8px; font-size: 0.8rem; }
+.player-sprite { bottom: 8%; left: 8%; }
+.npc-sprite { top: 12%; right: 8%; }
+.progress { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.5); color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; }
+
+.dialogue-area { flex: 1; padding: 16px; border-top: 4px solid #3b5bdb; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+.situation { font-size: 0.9rem; color: #444; }
+.question { font-weight: bold; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choices button { text-align: left; background: #f1f3f5; color: #222; border: 1px solid #ddd; }
+.choices button:hover { background: #e2e6ea; }
+.choices button.correct { background: #40c057; color: #fff; }
+.choices button.wrong { background: #fa5252; color: #fff; }
+.feedback.hidden { display: none; }
+
+#screen-ending { justify-content: center; align-items: center; text-align: center; gap: 12px; }
+
+@media (min-width: 600px) {
+  #app { margin: 24px auto; min-height: auto; height: 800px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+  .screen { min-height: auto; height: 100%; }
+}
